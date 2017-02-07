@@ -1,0 +1,7 @@
+{
+	"name": "spritest",
+	"platforms": ["web"],
+	"apps": {"index": "index"},
+	"minify": true,
+	"web-prefix": true
+}
