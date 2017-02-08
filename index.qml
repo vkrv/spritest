@@ -26,6 +26,8 @@ Item {
 			}
 
 			Rectangle {
+				x: (testSprite.currentFrame % testSprite.cols) * width;
+				y: Math.floor(testSprite.currentFrame / testSprite.cols) * height;
 				width: testSprite.width / testSprite.paintedWidth * 100%;
 				height: testSprite.height / testSprite.paintedHeight * 100%;
 				border.width: 1; 
@@ -45,10 +47,51 @@ Item {
 
 		AnimatedSprite {
 			id: testSprite;
+			property int cols: Math.floor(paintedWidth / width);
 			source: app.source;
 			width: 100%;
 			height: 100%;
-			repeat: true;
+		}
+
+		Rectangle {
+			width: 100%;
+			height: 100%;
+			property HoverMixin hover: HoverMixin {}
+			color: "#00000044";
+			opacity: hover.value;
+			Behavior on opacity { Animation { duration: 300; }}
+
+			MaterialButton {
+				icon: "remove_circle_outline";
+				x: 20; y: 2;
+				onClicked: { spriteRect.width--; }
+			}
+
+			MaterialButton {
+				icon: "add_circle_outline";
+				x: 40; y: 2;
+				onClicked: { spriteRect.width++; }
+			}
+
+			MaterialButton {
+				icon: "remove_circle_outline";
+				x: 2; y: 20;
+				onClicked: { spriteRect.height--; }
+			}
+
+			MaterialButton {
+				icon: "add_circle_outline";
+				x: 2; y: 40;
+				onClicked: { spriteRect.height++; }
+			}
+		}
+
+
+		Text {
+			y: 100% + 4;
+			color: "#212121";
+			font.pixelSize: 10;
+			text: testSprite.width + " x " + testSprite.height;
 		}
 	}
 
@@ -115,8 +158,8 @@ Item {
 				height: 100%; width: 60;
 				font.pixelSize: 16;
 				onValueChanged: { testSprite.totalFrames = value; if (testSprite.running) testSprite.restart() }
-				onCompleted: { this.value = 10;}
 				Border { width: 1; color: "#AAA"; }
+				onCompleted: { this.value = 6;}
 			}
 		}
 
@@ -128,7 +171,7 @@ Item {
 				font.pixelSize: 16;
 				onValueChanged: { testSprite.duration = value; if (testSprite.running) testSprite.restart() }
 				Border { width: 1; color: "#AAA"; }
-				onCompleted: { this.value = 1000;}
+				onCompleted: { this.value = 600;}
 			}
 		}
 
@@ -139,7 +182,7 @@ Item {
 			font.pixelSize: 16;
 			onValueChanged: { spriteRect.width = value; if (testSprite.running) testSprite.restart() }
 			Border { width: 1; color: "#AAA"; }
-			onCompleted: { this.value = 120;}
+			onCompleted: { this.value = 121;}
 		}}
 
 		InputWrapper { text: "Frame height"; NumberInput {
@@ -149,7 +192,7 @@ Item {
 			font.pixelSize: 16;
 			onValueChanged: { spriteRect.height = value; if (testSprite.running) testSprite.restart() }
 			Border { width: 1; color: "#AAA"; }
-			onCompleted: { this.value = 120;}
+			onCompleted: { this.value = 181;}
 		}}
 
 		InputWrapper { text: "Background color"; ColorInput {
@@ -159,19 +202,37 @@ Item {
 			Border { width: 1; color: "#AAA"; }
 		}}
 
-		WebItem {
-			width: 80; height: 30;
-			radius: 5;
-			border.width: 1;
-			border.color: testSprite.running ? "#EF6C00" : "#8BC34A";
-			color: hover ? border.color : "transparent";
-			Behavior on background { Animation { duration: 500; }}
-			TextMixin {
-				text: testSprite.running ? "Pause" : "Start";
-				color: parent.hover ? "white" : "#626262";
-				Behavior on color { Animation { duration: 500; }}
+		Row {
+			spacing: 8;
+			WebItem {
+				width: 80; height: 30;
+				radius: 5;
+				border.width: 1;
+				border.color: testSprite.running ? "#EF6C00" : "#8BC34A";
+				color: hover ? border.color : "transparent";
+				Behavior on background { Animation { duration: 500; }}
+				TextMixin {
+					text: testSprite.running ? "Pause" : "Start";
+					color: parent.hover ? "white" : "#626262";
+					Behavior on color { Animation { duration: 500; }}
+				}
+				onClicked: { testSprite.running = !testSprite.running; }
 			}
-			onClicked: { testSprite.running = !testSprite.running; }
+			WebItem {
+				width: 30; height: 30;
+				radius: 16;
+				border.width: 1;
+				border.color: "#0097A7";
+				color: testSprite.repeat ? "#0097A7" : "transparent";
+				Behavior on background { Animation { duration: 250; }}
+				MaterialIcon {
+					anchors.centerIn: parent;
+					text: "autorenew";
+					color: testSprite.repeat ? "white" : "#0097A7";
+					Behavior on color { Animation { duration: 250; }}
+				}
+				onClicked: { testSprite.repeat = !testSprite.repeat; }
+			}
 		}
 
 		Row {
@@ -185,12 +246,10 @@ Item {
 				text: "Current frame ";
 			}
 
-			MaterialIcon {
+			MaterialButton {
+				y: 5;
 				color: "#00695C";
-				size: 20;
-				y: 6; width: 22;
 				icon: 'fast_rewind';
-				HoverMixin { cursor: "pointer"; }
 				onClicked: { testSprite.currentFrame = (--testSprite.currentFrame + testSprite.totalFrames ) % testSprite.totalFrames }
 			}
 
@@ -202,12 +261,10 @@ Item {
 				text: testSprite.currentFrame;
 			}
 
-			MaterialIcon {
+			MaterialButton {
+				y: 5;
 				color: "#00695C";
-				size: 20; 
-				y: 6; width: 22;
 				icon: "fast_forward";
-				HoverMixin { cursor: "pointer"; }
 				onClicked: { testSprite.currentFrame = ++testSprite.currentFrame % testSprite.totalFrames }
 			}
 		}
