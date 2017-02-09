@@ -169,6 +169,7 @@ Item {
 				id: durationInput;
 				height: 100%; width: 60;
 				font.pixelSize: 16;
+				step: value < 100 ? 1 : (value < 1000 ? 10 : 100); 
 				onValueChanged: { testSprite.duration = value; if (testSprite.running) testSprite.restart() }
 				Border { width: 1; color: "#AAA"; }
 				onCompleted: { this.value = 600;}
