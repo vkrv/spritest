@@ -2,13 +2,41 @@ Item {
 	id: app;
 	anchors.fill: context;
 	property string source;
-//	focus: true;
 	source: "res/szombie1w.png";
 
 	onCompleted: { this.setFocus(); }
 
-	onRightPressed: { testSprite.currentFrame = ++testSprite.currentFrame % testSprite.totalFrames }
-	onLeftPressed: { testSprite.currentFrame = (--testSprite.currentFrame + testSprite.totalFrames ) % testSprite.totalFrames }
+	onKeyPressed: {
+		switch(key) {
+			case 'Space':
+			case 'Select': 
+				testSprite.running = !testSprite.running; 
+				break;
+			case 'Left': 
+				if (spriteRect.hover.value)
+					spriteRect.width--;
+				else
+					testSprite.currentFrame = (--testSprite.currentFrame + testSprite.totalFrames ) % testSprite.totalFrames;
+				break;
+			case 'Right': 
+				if (spriteRect.hover.value)
+					spriteRect.width++;
+				else
+					testSprite.currentFrame = ++testSprite.currentFrame % testSprite.totalFrames; 
+				break;
+			case 'R': 
+				testSprite.repeat = !testSprite.repeat;
+				break;
+			case 'Up':
+				if (spriteRect.hover.value)
+					spriteRect.height--;
+				break;
+			case 'Down':
+				if (spriteRect.hover.value)
+					spriteRect.height++;
+				break;
+		}
+	}
 
 	Image {
 		id: wholeImg;
@@ -50,6 +78,7 @@ Item {
 		effects.shadow.y: 1;
 		effects.shadow.blur: 20;
 		effects.shadow.spread: 1;
+		property HoverMixin hover: HoverMixin {}
 
 		AnimatedSprite {
 			id: testSprite;
@@ -62,9 +91,8 @@ Item {
 		Rectangle {
 			width: 100%;
 			height: 100%;
-			property HoverMixin hover: HoverMixin {}
 			color: "#00000044";
-			opacity: hover.value;
+			opacity: parent.hover.value;
 			Behavior on opacity { Animation { duration: 300; }}
 
 			MaterialButton {
@@ -307,7 +335,7 @@ Item {
 			font.pixelSize: 12;
 			wrapMode: Text.WordWrap;
 			text: "<b>Tips:</b><br>
-					- Use arrows on your keyboard to move forward or backward the frame;<br>
+					- Arrows: when the frame is hovered <b>Left, Right</b> - to agjust width, <b>Up, Down</b> - to adjust frame height, otherwise <b>Left, Right</b> is used to move to the next/previous frame. <b>R</b> - activates autorepeat. <b>Enter, Space</b> - start or pause animation;<br>
 					- Realod button reloads the resource from your filesystem if you choosed one(might be useful to keep all current values and adjust the resource);<br>
 					- Start button trigger animation cycle once, set autorepeat flag for infinite loop;<br>
 					- The frame can be adjusted manually by resizing it's rectangle, using plus/minus when hovered, or via inputs above.";
