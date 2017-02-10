@@ -35,6 +35,10 @@ Item {
 				if (spriteRect.hover.value)
 					spriteRect.height++;
 				break;
+			case 'Q':
+			case 'L':
+				fileInput.reload();
+				break;
 		}
 	}
 
@@ -335,7 +339,7 @@ Item {
 			font.pixelSize: 12;
 			wrapMode: Text.WordWrap;
 			text: "<b>Tips:</b><br>
-					- Arrows: when the frame is hovered <b>Left, Right</b> - to agjust width, <b>Up, Down</b> - to adjust frame height, otherwise <b>Left, Right</b> is used to move to the next/previous frame. <b>R</b> - activates autorepeat. <b>Enter, Space</b> - start or pause animation;<br>
+					- <b>Left, Right</b> - if the frame hovered, to agjust width, otherwise move to the next/previous frame. <b>Up, Down</b> - if the frame hovered, to adjust height. <b>R</b> - activates autorepeat. <b>Enter or Space</b> - start or pause animation. <b>Q or L</b> - reload local image; <br>
 					- Realod button reloads the resource from your filesystem if you choosed one(might be useful to keep all current values and adjust the resource);<br>
 					- Start button trigger animation cycle once, set autorepeat flag for infinite loop;<br>
 					- The frame can be adjusted manually by resizing it's rectangle, using plus/minus when hovered, or via inputs above.";
