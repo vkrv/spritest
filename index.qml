@@ -2,7 +2,13 @@ Item {
 	id: app;
 	anchors.fill: context;
 	property string source;
+//	focus: true;
 	source: "res/szombie1w.png";
+
+	onCompleted: { this.setFocus(); }
+
+	onRightPressed: { testSprite.currentFrame = ++testSprite.currentFrame % testSprite.totalFrames }
+	onLeftPressed: { testSprite.currentFrame = (--testSprite.currentFrame + testSprite.totalFrames ) % testSprite.totalFrames }
 
 	Image {
 		id: wholeImg;
@@ -107,19 +113,44 @@ Item {
 			text: "Load file or set URL";
 		}
 
-		FileInput {
-			onValueChanged: {
-				var self = this;
-				var file    = self.element.dom.files[0];
-				var reader  = new FileReader();
-
-				reader.onloadend = function () {
-					self.testSprite.stop();
-					self.app.source = reader.result;
+		Row {
+			spacing: 10;
+			WebItem {
+				width: 30; height: 30;
+				radius: 16;
+				border.width: 1;
+				border.color: "#0097A7";
+				color: hover ? "#0097A7" : "transparent";
+				Behavior on background { Animation { duration: 500; }}
+				MaterialIcon {
+					anchors.centerIn: parent;
+					text: "refresh";
+					color: parent.hover ? "white" : "#0097A7";
+					Behavior on color { Animation { duration: 500; }}
 				}
+				onClicked: { fileInput.reload(); }
+			}
 
-				if (file)
-					reader.readAsDataURL(file);
+			FileInput {
+				id: fileInput;
+				height: 20;
+				y: 5;
+
+				onValueChanged: { this.reload(); }
+
+				reload: {
+					var self = this;
+					var file = self.element.dom.files[0];
+					var reader  = new FileReader();
+
+					reader.onloadend = function () {
+						self.testSprite.stop();
+						self.app.source = reader.result;
+					}
+
+					if (file)
+						reader.readAsDataURL(file);
+				}
 			}
 		}
 
@@ -152,7 +183,7 @@ Item {
 
 		InputWrapper {
 			property int safeNum: Math.floor(testSprite.paintedWidth / testSprite.width) * Math.floor(testSprite.paintedHeight / testSprite.height);
-			text: "Total number of frames "  + (safeNum < testSprite.totalFrames ? '<span style="color:#EE5555;" >(safe number is ' + safeNum + ')</span>' : '<span style="color:#55AA55;">(number is safe)</span>');
+			text: 'Total number of frames <span style="color:#'  + (safeNum < testSprite.totalFrames ? 'EE5555' : '55AA55') + ';">(safe number is ' + safeNum + ')</span>';
 			NumberInput {
 				id: frames;
 				height: 100%; width: 60;
@@ -268,6 +299,18 @@ Item {
 				icon: "fast_forward";
 				onClicked: { testSprite.currentFrame = ++testSprite.currentFrame % testSprite.totalFrames }
 			}
+		}
+
+		Text {
+			width: 100%;
+			color: "#616161";
+			font.pixelSize: 12;
+			wrapMode: Text.WordWrap;
+			text: "<b>Tips:</b><br>
+					- Use arrows on your keyboard to move forward or backward the frame;<br>
+					- Realod button reloads the resource from your filesystem if you choosed one(might be useful to keep all current values and adjust the resource);<br>
+					- Start button trigger animation cycle once, set autorepeat flag for infinite loop;<br>
+					- The frame can be adjusted manually by resizing it's rectangle, using plus/minus when hovered, or via inputs above.";
 		}
 	}
 }
