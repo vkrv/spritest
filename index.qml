@@ -57,7 +57,8 @@ Item {
 			border.width: 1; border.color: "#039BE5";
 
 			Text {
-				y: 100% + 5;
+				y: 100% + 4;
+				font.pixelSize: 10;
 				color: "#626262";
 				text: "Source height:<b> " + testSprite.paintedHeight + "</b>, width: <b> "
 					+ testSprite.paintedWidth + "</b>";
@@ -80,8 +81,8 @@ Item {
 		color: colorInput.color;
 		border.width: 0;
 		effects.shadow.y: 1;
-		effects.shadow.blur: 20;
-		effects.shadow.spread: 1;
+		effects.shadow.blur: 12;
+		effects.shadow.spread: 0;
 		property HoverMixin hover: HoverMixin {}
 
 		AnimatedSprite {
@@ -215,10 +216,10 @@ Item {
 
 		InputWrapper {
 			property int safeNum: Math.floor(testSprite.paintedWidth / testSprite.width) * Math.floor(testSprite.paintedHeight / testSprite.height);
-			text: 'Total number of frames <span style="color:#'  + (safeNum < testSprite.totalFrames ? 'EE5555' : '55AA55') + ';">(safe number is ' + safeNum + ')</span>';
+			text: 'Total number of frames <span style="color:#'  + (safeNum < testSprite.totalFrames ? 'EE5555' : '55AA55') + ';">(safe&nbsp;number&nbsp;is&nbsp;' + safeNum + ')</span>';
 			NumberInput {
 				id: frames;
-				height: 100%; width: 60;
+				height: 32; width: 60;
 				font.pixelSize: 16;
 				onValueChanged: { testSprite.totalFrames = value; if (testSprite.running) testSprite.restart() }
 				Border { width: 1; color: "#AAA"; }
@@ -230,7 +231,7 @@ Item {
 			text: "Duration of the animation (" + Math.floor(100000 / testSprite.interval) / 100 + " fps)"; 
 			NumberInput {
 				id: durationInput;
-				height: 100%; width: 60;
+				height: 32; width: 60;
 				font.pixelSize: 16;
 				step: value < 100 ? 1 : (value < 1000 ? 10 : 100); 
 				onValueChanged: { testSprite.duration = value; if (testSprite.running) testSprite.restart() }
@@ -241,7 +242,7 @@ Item {
 
 		InputWrapper { text: "Frame width"; NumberInput {
 			id: widthInput;
-			height: 100%; width: 60;
+			height: 32; width: 60;
 			value: spriteRect.width;
 			font.pixelSize: 16;
 			onValueChanged: { spriteRect.width = value; if (testSprite.running) testSprite.restart() }
@@ -251,7 +252,7 @@ Item {
 
 		InputWrapper { text: "Frame height"; NumberInput {
 			id: heightInput;
-			height: 100%; width: 60;
+			height: 32; width: 60;
 			value: spriteRect.height;
 			font.pixelSize: 16;
 			onValueChanged: { spriteRect.height = value; if (testSprite.running) testSprite.restart() }
@@ -261,7 +262,7 @@ Item {
 
 		InputWrapper { text: "Background color"; ColorInput {
 			id: colorInput;
-			height: 100%; width: 60;
+			height: 32; width: 60;
 			color: "#FFFFFF";
 			Border { width: 1; color: "#AAA"; }
 		}}
@@ -338,11 +339,36 @@ Item {
 			color: "#616161";
 			font.pixelSize: 12;
 			wrapMode: Text.WordWrap;
-			text: "<b>Tips:</b><br>
-					- <b>Left, Right</b> - if the frame hovered, to agjust width, otherwise move to the next/previous frame. <b>Up, Down</b> - if the frame hovered, to adjust height. <b>R</b> - activates autorepeat. <b>Enter or Space</b> - start or pause animation. <b>Q or L</b> - reload local image; <br>
-					- Realod button reloads the resource from your filesystem if you choosed one(might be useful to keep all current values and adjust the resource);<br>
-					- Start button trigger animation cycle once, set autorepeat flag for infinite loop;<br>
-					- The frame can be adjusted manually by resizing it's rectangle, using plus/minus when hovered, or via inputs above.";
+			text: '
+			<b>Tips:</b><br>
+			<ul style="list-style-type:circle">
+				<li>
+					<b>Left, Right</b> - if the frame hovered, to agjust width, otherwise move to the next/previous frame;
+				</li>
+				<li>
+					<b>Up, Down</b> - if the frame hovered, to adjust height;
+				</li>
+				<li>
+					<b>Enter or Space</b> - start or pause animation;
+				</li>
+				<li>
+					<b>R</b> - activates autorepeat;
+				</li>
+				<li>
+					<b>Q or L</b> - reload local image;
+				</li>
+				<li>
+					Start button trigger animation cycle once, set autorepeat flag for infinite loop;
+				</li>
+				<li>
+					Realod button reloads the resource from your filesystem if you choosed one(might be useful to keep all current values and adjust the resource);
+				</li>
+				<li>
+					The frame can be adjusted manually by resizing it\'s rectangle, using plus/minus when hovered, or via inputs above.
+				</li>
+			</ul>
+			View the project on <a href="https://github.com/vkrv/spritest">GitHub<a><br><br>
+					';
 		}
 	}
 }
