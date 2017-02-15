@@ -134,6 +134,27 @@ Item {
 		}
 	}
 
+	function reloadImage() {
+		if (!this.imageFile)
+			return;
+
+		var reader  = new FileReader();
+
+		reader.onloadend = function () {
+			this.testSprite.stop();
+			this.source = reader.result;
+		}.bind(this)
+
+		reader.readAsDataURL(this.imageFile);
+	}
+
+	DropZone{
+		onFilesAdded(files): {
+			app.imageFile = files[0];
+			app.reloadImage()
+		}
+	}
+
 	Column {
 		width: wholeImg.width + wholeImg.x;
 		x: 20; y: Math.max(spriteRect.height, wholeImg.height) + 50;
@@ -143,7 +164,7 @@ Item {
 			font.pixelSize: 12;
 			font.weight: 300;
 			color: "#414141";
-			text: "Load file or set URL";
+			text: "Load/drop(anywhere on the page) file or set URL";
 		}
 
 		Row {
@@ -161,7 +182,7 @@ Item {
 					color: parent.hover ? "white" : "#0097A7";
 					Behavior on color { Animation { duration: 500; }}
 				}
-				onClicked: { fileInput.reload(); }
+				onClicked: { if (app.imageFile) app.reloadImage(); }
 			}
 
 			FileInput {
@@ -169,20 +190,9 @@ Item {
 				height: 20;
 				y: 5;
 
-				onValueChanged: { this.reload(); }
-
-				reload: {
-					var self = this;
-					var file = self.element.dom.files[0];
-					var reader  = new FileReader();
-
-					reader.onloadend = function () {
-						self.testSprite.stop();
-						self.app.source = reader.result;
-					}
-
-					if (file)
-						reader.readAsDataURL(file);
+				onValueChanged: {
+					app.imageFile = this.element.dom.files[0];
+					app.reloadImage();
 				}
 			}
 		}
