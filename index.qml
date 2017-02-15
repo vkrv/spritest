@@ -135,7 +135,7 @@ Item {
 	}
 
 	function reloadImage() {
-		if (!this.imageFile)
+		if (!this.imageFile || !this.imageFile.type.match(/image.*/))
 			return;
 
 		var reader  = new FileReader();
