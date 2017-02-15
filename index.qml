@@ -56,6 +56,13 @@ Item {
 			width: parent.paintedWidth; height: parent.paintedHeight;
 			border.width: 1; border.color: "#039BE5";
 
+			ImageMixin {
+				width: 100%; height: 100%;
+				z: -2;
+				source: "res/checkerboard.png";
+				fillMode: Image.Tile;
+			}
+
 			Text {
 				y: 100% + 4;
 				font.pixelSize: 10;
